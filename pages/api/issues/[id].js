@@ -12,9 +12,7 @@ export default async function handler(req, res) {
       .eq('id', id)
 
     if (error) {
-      return res.status(500).json({
-        error: error.message
-      })
+      return res.status(500).json({ error: error.message })
     }
 
     return res.status(200).json({
@@ -22,7 +20,24 @@ export default async function handler(req, res) {
     })
   }
 
-  res.setHeader('Allow', ['DELETE'])
+  if (req.method === 'PUT') {
+
+    const { status } = req.body
+
+    const { data, error } = await supabase
+      .from('issues')
+      .update({ status })
+      .eq('id', id)
+      .select()
+
+    if (error) {
+      return res.status(500).json({ error: error.message })
+    }
+
+    return res.status(200).json(data)
+  }
+
+  res.setHeader('Allow', ['DELETE', 'PUT'])
 
   res.status(405).end()
 }

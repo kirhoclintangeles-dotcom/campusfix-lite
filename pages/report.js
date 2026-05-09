@@ -1,6 +1,9 @@
 import { useState } from 'react'
+import { useRouter } from 'next/router'
 
 export default function ReportPage() {
+
+  const router = useRouter()
 
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
@@ -9,7 +12,7 @@ export default function ReportPage() {
   async function handleSubmit(e) {
     e.preventDefault()
 
-    const response = await fetch('/api/issues', {
+    await fetch('/api/issues', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -21,54 +24,83 @@ export default function ReportPage() {
       })
     })
 
-    const data = await response.json()
-
-    console.log(data)
-
-    alert('Issue Submitted!')
-
-    setTitle('')
-    setDescription('')
-    setCategory('')
+    router.push('/')
   }
 
   return (
-    <div style={{ padding: '40px' }}>
-      <h1>Report Issue</h1>
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-6">
 
-      <form onSubmit={handleSubmit}>
+      <div className="bg-white w-full max-w-xl rounded-3xl shadow-sm p-8">
 
-        <input
-          type="text"
-          placeholder="Issue Title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />
+        <h1 className="text-3xl font-bold mb-2 text-gray-800">
+          Report an Issue
+        </h1>
 
-        <br /><br />
+        <p className="text-gray-500 mb-8">
+          Submit campus concerns for quick action.
+        </p>
 
-        <textarea
-          placeholder="Description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
+        <form onSubmit={handleSubmit} className="space-y-5">
 
-        <br /><br />
+          <div>
+            <label className="block mb-2 font-medium text-gray-700">
+              Issue Title
+            </label>
 
-        <input
-          type="text"
-          placeholder="Category"
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-        />
+            <input
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              className="w-full border border-gray-300 rounded-xl p-4 outline-none focus:ring-2 focus:ring-black"
+              required
+            />
+          </div>
 
-        <br /><br />
+          <div>
+            <label className="block mb-2 font-medium text-gray-700">
+              Description
+            </label>
 
-        <button type="submit">
-          Submit
-        </button>
+            <textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              rows="5"
+              className="w-full border border-gray-300 rounded-xl p-4 outline-none focus:ring-2 focus:ring-black"
+              required
+            />
+          </div>
 
-      </form>
+          <div>
+            <label className="block mb-2 font-medium text-gray-700">
+              Category
+            </label>
+
+            <select
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className="w-full border border-gray-300 rounded-xl p-4 outline-none focus:ring-2 focus:ring-black"
+              required
+            >
+              <option value="">Select Category</option>
+              <option value="Electrical">Electrical</option>
+              <option value="Furniture">Furniture</option>
+              <option value="Sanitation">Sanitation</option>
+              <option value="Plumbing">Plumbing</option>
+              <option value="Safety">Safety</option>
+            </select>
+          </div>
+
+          <button
+            type="submit"
+            className="w-full bg-black text-white py-4 rounded-xl font-semibold hover:opacity-90 transition"
+          >
+            Submit Report
+          </button>
+
+        </form>
+
+      </div>
+
     </div>
   )
 }
